@@ -96,3 +96,74 @@ O agente pode:
 - Abrir incidente formal com diagnóstico e recomendação (`relatorio_incidente`)
 
 O runtime lê os arquivos de configuração (`.md` e `.yaml`) e orquestra a execução, delegando as decisões de planejamento à LLM e executando as ferramentas com implementações mock realistas.
+
+**Comandos executados:**
+```bash
+pip install -r runtime/requirements.txt
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos"
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos" --modo interactive
+```
+
+**Arquitetura:**
+```
+Alerta → Runtime Python → Loop (Perceber → Planejar → Agir → Avaliar)
+                            ↓
+                    LLM (decisão de próxima ação)
+                            ↓
+                    Tools (consultar_metricas, buscar_logs, historico_deploys, relatorio_incidente)
+                            ↓
+                    Contratos (agent.md, skills.md, rules.md, contracts/*.md)
+```
+
+**Projeto:** [monitor-agent-v2](module-01-a)
+
+**Tecnologias utilizadas:**
+- **Python** - Runtime completo com módulos especializados
+- **YAML** - Formato de contratos lidos pelo runtime
+- **LLM (Large Language Model)** - Motor de decisão (GPT-4o-mini ou mock)
+- **JSON** - Formato de troca de dados entre módulos
+
+**Conceitos abordados:**
+- Arquitetura interna do runtime (spec-driven development)
+- Mapeamento direto: cada linha de YAML tem uma linha de Python que a lê
+- Circuit breaker para validação de respostas da LLM
+- Telemetria estruturada com trace_id, auditoria e métricas de saúde
+- Validação cruzada de contratos (validador.py)
+- Geração automática de ferramentas a partir de skills
+- Observabilidade: eventos, tempo por fase, contagem de tokens
+- CLI com comandos: rodar, validar, rastreamento, replay, analisar
+
+**Aplicação prática:**
+O `module-01-a` revela o "motor" por trás do agente. O runtime é genérico e não sabe sobre latência ou incidentes - ele apenas lê contratos e executa.
+
+Módulos do runtime:
+- `contratos.py` - Carrega os 9 arquivos `.md` e monta estado inicial
+- `ciclo.py` - Orquestra o loop com circuit breaker
+- `planejador.py` - Percepção e chamada à LLM (ou mock)
+- `ferramentas.py` - Constrói tools a partir dos skills
+- `executor.py` - Valida payload, executa, dispara hooks, avalia
+- `telemetria.py` - Registra eventos, mede tempo, conta tokens
+- `validador.py` - Valida cruzamento entre contratos
+
+**Comandos executados:**
+```bash
+pip install -r runtime/requirements.txt
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos"
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos" --modo interactive
+python runtime/main.py validar --agente monitor-agent
+```
+
+**Arquitetura do Runtime:**
+```
+main.py (CLI)
+    ↓
+contratos.py → carrega 9 .md → estado inicial
+    ↓
+ciclo.py → loop: perceber → planejar → validar → executar → avaliar
+    ↓         ↓
+planejador.py  executor.py
+(chamar_llm)   (validar → executar → avaliar)
+    ↓              ↓
+ferramentas.py  telemetria.py
+(cria tools)    (trace, audit, metrics)
+```
