@@ -97,13 +97,6 @@ O agente pode:
 
 O runtime lê os arquivos de configuração (`.md` e `.yaml`) e orquestra a execução, delegando as decisões de planejamento à LLM e executando as ferramentas com implementações mock realistas.
 
-**Comandos executados:**
-```bash
-pip install -r runtime/requirements.txt
-python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos"
-python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos" --modo interactive
-```
-
 **Arquitetura:**
 ```
 Alerta → Runtime Python → Loop (Perceber → Planejar → Agir → Avaliar)
@@ -150,7 +143,6 @@ Módulos do runtime:
 pip install -r runtime/requirements.txt
 python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos"
 python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos" --modo interactive
-python runtime/main.py validar --agente monitor-agent
 ```
 
 **Arquitetura do Runtime:**
@@ -166,4 +158,55 @@ planejador.py  executor.py
     ↓              ↓
 ferramentas.py  telemetria.py
 (cria tools)    (trace, audit, metrics)
+```
+
+**Projeto:** [trace-analyzer](module-01-b)
+
+**Tecnologias utilizadas:**
+- **Python** - Runtime compartilhado com análise especializada
+- **JSON** - Formato do trace.json para análise estruturada
+- **LLM (Large Language Model)** - Motor de diagnóstico do analyzer
+- **Markdown** - Saída legível (analise-agente.md)
+
+**Conceitos abordados:**
+- Observabilidade em 4 níveis: hooks, KPIs, trace.json, análise automatizada
+- Agente que analisa execução de outro agente (meta-análise)
+- trace.json com 4 blocos: cabeçalho, etapas, health_metrics, performance_data
+- Diagnóstico automatizado: saúde, performance, conformidade, anomalias, veredito
+- Rastreabilidade completa: um agente roda, outro analisa, ambos com trace
+- Orquestração garantida por regras do planner (execução sequencial)
+
+**Aplicação prática:**
+O `trace-analyzer` é um agente do tipo `task_based` que atua como um "agente auditor". Ele lê o `trace.json` gerado por qualquer outro agente e produz um diagnóstico estruturado.
+
+O agente pode:
+- Analisar saúde (taxa de sucesso, circuit breaker, qualidade) via `analisar_saude`
+- Analisar performance (tempo, tokens, gargalos) via `analisar_performance`
+- Verificar conformidade (ferramentas obrigatórias, pipeline) via `analisar_conformidade`
+- Detectar anomalias (latência crescente, etapas improdutivas) via `detectar_anomalias`
+- Consolidar tudo e gerar recomendações via `gerar_veredito`
+
+Gera dois artefatos: `analise.json` (trace da análise) e `analise-agente.md` (relatório legível).
+
+**Comandos executados:**
+```bash
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência"
+python runtime/main.py analisar --agente trace-analyzer
+```
+
+**Arquitetura da Observabilidade:**
+```
+Nível 1: Hooks (tempo real)
+    ↓
+Nível 2: Dashboard KPIs (tempo real)
+    ↓
+Nível 3: trace.json (post-mortem)
+    ↓
+Nível 4: trace-analyzer (análise automatizada)
+    ↓
+         trace-analyzer (task_based)
+              ↓
+    analisar_saude → analisar_performance → analisar_conformidade → detectar_anomalias → gerar_veredito
+              ↓
+    Saída: analise.json + analise-agente.md
 ```
