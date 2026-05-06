@@ -210,3 +210,67 @@ Nível 4: trace-analyzer (análise automatizada)
               ↓
     Saída: analise.json + analise-agente.md
 ```
+
+**Projeto:** [agent-types](module-01-c)
+
+**Tecnologias utilizadas:**
+- **Python** - Runtime genérico para múltiplos tipos de agentes
+- **LLM (Large Language Model)** - Motor adaptável conforme o modo
+- **YAML** - Contratos específicos por tipo de agente
+- **JSON** - Formato de entrada/saída e traces
+
+**Conceitos abordados:**
+- 4 tipos de agentes: `task_based`, `interactive`, `goal_oriented`, `autonomous`
+- Contract-driven development: iterar sobre especificação, não código
+- Mesmo runtime, comportamentos diferentes via flag `--modo`
+- Decomposição de objetivos amplos em `goal_oriented`
+- Confirmação humana para ações sensíveis em modo `autonomous`
+- Validação cruzada antes da execução (`validar`)
+- 8 projetos de portfólio com diferentes domínios
+
+**Aplicação prática:**
+O `module-01-c` demonstra como o mesmo runtime suporta diferentes comportamentos através da flag `--modo`:
+
+- **`monitor-agent` (task_based)**: Recebe alerta e entrega relatório diretamente
+- **`monitor-agent` (interactive)**: Faz perguntas para remover ambiguidades antes de agir
+- **`backlog-decomposer` (goal_oriented)**: Decompõe objetivo em épicos → stories → critérios → riscos → backlog
+- **`monitor-agent` (autonomous)**: Responde a eventos com limites rígidos e confirmação humana
+
+O `backlog-decomposer` possui 6 skills encadeadas: `analisar_objetivo` → `gerar_epicos` → `detalhar_stories` → `avaliar_riscos` → `gerar_perguntas` → `montar_backlog`.
+
+**Comandos executados:**
+```bash
+python runtime/main.py rodar --agente monitor-agent --entrada "Algo estranho no sistema" --modo interactive
+python runtime/main.py rodar --agente backlog-decomposer --entrada "Permitir que novos usuários completem cadastro sem suporte humano"
+python runtime/main.py rodar --agente monitor-agent --entrada "Cpu em 95 por cento no serviço de pagamentos" --modo autonomous --evento alerta_cpu
+python runtime/main.py validar --agente monitor-agent
+```
+
+**Arquitetura dos Tipos de Agente:**
+```
+Mesmo Runtime Python
+       ↓
+Flag --modo altera prompt do sistema:
+       ↓
+┌──────────────┬──────────────┬──────────────┬──────────────┐
+│ task_based   │ interactive  │ goal_oriented│ autonomous  │
+│ tarefa clara │ pergunta    │ decompõe    │ evento/      │
+│ execução     │ antes de     │ objetivo em  │ trigger com  │
+│ direta       │ agir         │ sub-objetivos│ limites rígidos│
+└──────────────┴──────────────┴──────────────┴──────────────┘
+       ↓
+Exemplos:
+- monitor-agent (task_based): alerta → métricas → logs → deploy → relatório
+- backlog-decomposer (goal_oriented): objetivo → épicos → stories → backlog
+- monitor-agent (autonomous): evento → ação → confirmação humana
+```
+**Projetos de Portfólio Sugeridos:**
+1. Incident Triage Report Agent (SRE/DevOps)
+2. PR Review Gate Agent (Engenharia de Software)
+3. API Contract Draft Agent (Backend Design)
+4. Runbook Generator Agent (Platform Engineering)
+5. Backlog Decomposer Agent (Product + Engineering)
+6. Data Quality Auditor Agent (Data Engineering)
+7. Compliance Checklist Agent (Governança)
+8. Onboarding Guide Agent (Dev Productivity)
+```
