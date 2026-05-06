@@ -1,0 +1,164 @@
+{
+  "trace_id": "0c39b2aa25be",
+  "tipo_agente": "task_based",
+  "entrada": "TRACE_ID: 0229f1c1e56f\nAGENTE: monitor-agent\nTIPO: task_based\nTEMPO_TOTAL: 44.82s\nTOKENS: {\"prompt\": 10380, \"completion\": 1192, \"total\": 11572}\nETAPA 1: acao=CHAMAR_FERRAMENTA ferramenta=consultar_metricas sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: coletar métricas de latência, throughput e taxa de erro do serviço\nETAPA 2: acao=CHAMAR_FERRAMENTA ferramenta=buscar_logs sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: Logs de erro coletados com sucesso\nETAPA 3: acao=CHAMAR_FERRAMENTA ferramenta=historico_deploys sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: Coletar informações sobre os deploys recentes do serviço para entender possíveis alterações que possam ter causado o aumento de latência.\nETAPA 4: acao=CHAMAR_FERRAMENTA ferramenta=relatorio_incidente sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: relatorio_incidente obrigatorio antes de finalizar\nETAPA 5: acao=FINALIZAR ferramenta= sucesso=None qualidade= objetivo=True motivo=Incidente registrado com evidências de latência elevada e erros no banco de dados. A recomendação é investigar e corrigir as falhas de conexão ao banco de dados.\nHEALTH: taxa_sucesso=100.0% circuit_breaker=0 payload_falhas=0 chamadas_llm=9\nPERF_TOKENS: {\"prompt\": 10380, \"completion\": 1192, \"total\": 11572}\nPERF_TEMPO_TOTAL_MS: 44822\nPERF_FASE perceber: media=0.0ms max=0.1ms total=0.2ms contagem=5\nPERF_FASE planejar: media=3614.3ms max=5329.5ms total=18071.7ms contagem=5\nPERF_FASE validar_payload: media=0.0ms max=0.1ms total=0.1ms contagem=4\nPERF_FASE agir: media=6686.2ms max=16686.9ms total=26744.9ms contagem=4\nPERF_FASE avaliar: media=0.0ms max=0ms total=0.0ms contagem=5\nRESUMO: Objetivo: resolver_incidente\nEtapas executadas: 5\nFerramentas chamadas: consultar_metricas, buscar_logs, historico_deploys, relatorio_incidente\nResultado: Incidente registrado com evidências de latência elevada e erros no banco de dados. A recomendação é investigar e corrigir as falhas de conexão ao banco de dados.\nTipo: task_based",
+  "evento": null,
+  "tempo_total_segundos": 4.53,
+  "tokens_consumidos": {
+    "prompt": 1072,
+    "completion": 65,
+    "total": 1137
+  },
+  "etapas": [
+    {
+      "etapa": 1,
+      "percepcao": "Alerta: TRACE_ID: 0229f1c1e56f\nAGENTE: monitor-agent\nTIPO: task_based\nTEMPO_TOTAL: 44.82s\nTOKENS: {\"prompt\": 10380, \"completion\": 1192, \"total\": 11572}\nETAPA 1: acao=CHAMAR_FERRAMENTA ferramenta=consultar_metricas sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: coletar métricas de latência, throughput e taxa de erro do serviço\nETAPA 2: acao=CHAMAR_FERRAMENTA ferramenta=buscar_logs sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: Logs de erro coletados com sucesso\nETAPA 3: acao=CHAMAR_FERRAMENTA ferramenta=historico_deploys sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: Coletar informações sobre os deploys recentes do serviço para entender possíveis alterações que possam ter causado o aumento de latência.\nETAPA 4: acao=CHAMAR_FERRAMENTA ferramenta=relatorio_incidente sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: relatorio_incidente obrigatorio antes de finalizar\nETAPA 5: acao=FINALIZAR ferramenta= sucesso=None qualidade= objetivo=True motivo=Incidente registrado com evidências de latência elevada e erros no banco de dados. A recomendação é investigar e corrigir as falhas de conexão ao banco de dados.\nHEALTH: taxa_sucesso=100.0% circuit_breaker=0 payload_falhas=0 chamadas_llm=9\nPERF_TOKENS: {\"prompt\": 10380, \"completion\": 1192, \"total\": 11572}\nPERF_TEMPO_TOTAL_MS: 44822\nPERF_FASE perceber: media=0.0ms max=0.1ms total=0.2ms contagem=5\nPERF_FASE planejar: media=3614.3ms max=5329.5ms total=18071.7ms contagem=5\nPERF_FASE validar_payload: media=0.0ms max=0.1ms total=0.1ms contagem=4\nPERF_FASE agir: media=6686.2ms max=16686.9ms total=26744.9ms contagem=4\nPERF_FASE avaliar: media=0.0ms max=0ms total=0.0ms contagem=5\nRESUMO: Objetivo: resolver_incidente\nEtapas executadas: 5\nFerramentas chamadas: consultar_metricas, buscar_logs, historico_deploys, relatorio_incidente\nResultado: Incidente registrado com evidências de latência elevada e erros no banco de dados. A recomendação é investigar e corrigir as falhas de conexão ao banco de dados.\nTipo: task_based\nModo: task_based\nEtapas realizadas: 1/10\nChamadas de ferramenta: 0/10",
+      "plano": {
+        "proxima_acao": "FINALIZAR",
+        "nome_ferramenta": "",
+        "argumentos_ferramenta": {},
+        "criterio_sucesso": "incidente registrado com evidências de latência elevada e erros no banco de dados.",
+        "pergunta": ""
+      },
+      "resultado_acao": null,
+      "avaliacao": {
+        "objetivo_alcancado": true,
+        "motivo": "incidente registrado com evidências de latência elevada e erros no banco de dados."
+      }
+    }
+  ],
+  "resumo": "Objetivo: desconhecido\nEtapas executadas: 1\nFerramentas chamadas: nenhuma\nResultado: incidente registrado com evidências de latência elevada e erros no banco de dados.\nTipo: task_based",
+  "agente": "trace-analyzer",
+  "telemetry_stream": [
+    {
+      "timestamp": "2026-05-06T14:37:58.280893",
+      "elapsed_ms": 0,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "inicio",
+      "dados": {
+        "entrada": "TRACE_ID: 0229f1c1e56f\nAGENTE: monitor-agent\nTIPO: task_based\nTEMPO_TOTAL: 44.82s\nTOKENS: {\"prompt\": 10380, \"completion\": 1192, \"total\": 11572}\nETAPA 1: acao=CHAMAR_FERRAMENTA ferramenta=consultar_metricas sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: coletar métricas de latência, throughput e taxa de erro do serviço\nETAPA 2: acao=CHAMAR_FERRAMENTA ferramenta=buscar_logs sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: Logs de erro coletados com sucesso\nETAPA 3: acao=CHAMAR_FERRAMENTA ferramenta=historico_deploys sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: Coletar informações sobre os deploys recentes do serviço para entender possíveis alterações que possam ter causado o aumento de latência.\nETAPA 4: acao=CHAMAR_FERRAMENTA ferramenta=relatorio_incidente sucesso=True qualidade=completa objetivo=False motivo=etapa ok - criterio: relatorio_incidente obrigatorio antes de finalizar\nETAPA 5: acao=FINALIZAR ferramenta= sucesso=None qualidade= objetivo=True motivo=Incidente registrado com evidências de latência elevada e erros no banco de dados. A recomendação é investigar e corrigir as falhas de conexão ao banco de dados.\nHEALTH: taxa_sucesso=100.0% circuit_breaker=0 payload_falhas=0 chamadas_llm=9\nPERF_TOKENS: {\"prompt\": 10380, \"completion\": 1192, \"total\": 11572}\nPERF_TEMPO_TOTAL_MS: 44822\nPERF_FASE perceber: media=0.0ms max=0.1ms total=0.2ms contagem=5\nPERF_FASE planejar: media=3614.3ms max=5329.5ms total=18071.7ms contagem=5\nPERF_FASE validar_payload: media=0.0ms max=0.1ms total=0.1ms contagem=4\nPERF_FASE agir: media=6686.2ms max=16686.9ms total=26744.9ms contagem=4\nPERF_FASE avaliar: media=0.0ms max=0ms total=0.0ms contagem=5\nRESUMO: Objetivo: resolver_incidente\nEtapas executadas: 5\nFerramentas chamadas: consultar_metricas, buscar_logs, historico_deploys, relatorio_incidente\nResultado: Incidente registrado com evidências de latência elevada e erros no banco de dados. A recomendação é investigar e corrigir as falhas de conexão ao banco de dados.\nTipo: task_based",
+        "objetivo": "desconhecido",
+        "max_etapas": 10,
+        "max_tokens": 50000
+      }
+    },
+    {
+      "timestamp": "2026-05-06T14:37:58.281403",
+      "elapsed_ms": 1,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "fase_concluida",
+      "dados": {
+        "fase": "perceber",
+        "etapa": 1,
+        "duracao_ms": 0.0
+      }
+    },
+    {
+      "timestamp": "2026-05-06T14:38:02.806319",
+      "elapsed_ms": 4525,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "fase_concluida",
+      "dados": {
+        "fase": "planejar",
+        "etapa": 1,
+        "duracao_ms": 4524.9
+      }
+    },
+    {
+      "timestamp": "2026-05-06T14:38:02.806394",
+      "elapsed_ms": 4526,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "plano_gerado",
+      "dados": {
+        "proxima_acao": "FINALIZAR",
+        "nome_ferramenta": "",
+        "criterio_sucesso": "incidente registrado com evidências de latência elevada e erros no banco de dados."
+      }
+    },
+    {
+      "timestamp": "2026-05-06T14:38:02.806408",
+      "elapsed_ms": 4526,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "fase_concluida",
+      "dados": {
+        "fase": "avaliar",
+        "etapa": 1,
+        "duracao_ms": 0.0
+      }
+    },
+    {
+      "timestamp": "2026-05-06T14:38:02.806564",
+      "elapsed_ms": 4526,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "finalizado",
+      "dados": {
+        "etapas": 1,
+        "resultado": "incidente registrado com evidências de latência elevada e erros no banco de dados.",
+        "tokens_total": 1137
+      }
+    }
+  ],
+  "audit_logs": [
+    {
+      "timestamp": "2026-05-06T14:38:02.806394",
+      "elapsed_ms": 4526,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "plano_gerado",
+      "dados": {
+        "proxima_acao": "FINALIZAR",
+        "nome_ferramenta": "",
+        "criterio_sucesso": "incidente registrado com evidências de latência elevada e erros no banco de dados."
+      }
+    },
+    {
+      "timestamp": "2026-05-06T14:38:02.806564",
+      "elapsed_ms": 4526,
+      "trace_id": "0c39b2aa25be",
+      "tipo": "finalizado",
+      "dados": {
+        "etapas": 1,
+        "resultado": "incidente registrado com evidências de latência elevada e erros no banco de dados.",
+        "tokens_total": 1137
+      }
+    }
+  ],
+  "health_metrics": {
+    "trace_id": "0c39b2aa25be",
+    "taxa_sucesso_ferramentas": 0.0,
+    "ferramentas_sucesso": 0,
+    "ferramentas_falha": 0,
+    "circuit_breaker_ativacoes": 0,
+    "validacao_payload_falhas": 0,
+    "chamadas_llm": 1
+  },
+  "performance_data": {
+    "trace_id": "0c39b2aa25be",
+    "tempo_total_ms": 4526,
+    "tokens": {
+      "prompt": 1072,
+      "completion": 65,
+      "total": 1137
+    },
+    "chamadas_llm": 1,
+    "fases": {
+      "perceber": {
+        "total_ms": 0.0,
+        "contagem": 1,
+        "max_ms": 0,
+        "media_ms": 0.0
+      },
+      "planejar": {
+        "total_ms": 4524.9,
+        "contagem": 1,
+        "max_ms": 4524.9,
+        "media_ms": 4524.9
+      },
+      "avaliar": {
+        "total_ms": 0.0,
+        "contagem": 1,
+        "max_ms": 0,
+        "media_ms": 0.0
+      }
+    }
+  }
+}
