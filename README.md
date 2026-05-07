@@ -273,4 +273,64 @@ Exemplos:
 6. Data Quality Auditor Agent (Data Engineering)
 7. Compliance Checklist Agent (Governança)
 8. Onboarding Guide Agent (Dev Productivity)
+
+### Módulo 02: Raciocínio e Tomada de Decisão em Agentes
+**Projeto:** [cognitive-architecture](module-02)
+
+**Tecnologias utilizadas:**
+- **Python** - Runtime com suporte a múltiplas arquiteturas cognitivas
+- **LLM (Large Language Model)** - Motor com raciocínio estruturado
+- **YAML** - Contratos de arquitetura (`architectures/<nome>/`)
+- **JSON** - Formato de saída com campo `raciocínio`
+
+**Conceitos abordados:**
+- Arquiteturas cognitivas como contrato (ReAct, Plan-Execute, Reflection)
+- Padrão Open-Closed: trocar arquitetura sem mexer no runtime
+- ReAct (Reason + Act): raciocínio explícito antes de cada ação
+- Inversão de dependência: runtime conhece o slot, não a arquitetura
+- `formato_saida` dinâmico lido do contrato da arquitetura
+- Sobrescrita de `planner.md` e `executor.md` via flag `--arquitetura`
+- Raciocínio auditável no `trace.json`
+
+**Aplicação prática:**
+O `module-02` introduz o conceito de **arquitetura cognitiva como contrato**. O agente e o runtime não mudam - o que muda é a pasta `architectures/<nome>/` carregada em tempo de execução.
+
+A arquitetura **ReAct** adiciona um campo `raciocínio` obrigatório ao formato de saída:
+- O agente deve explicar: (1) o que já sei, (2) o que falta, (3) por que escolhi esta ação
+- O raciocínio aparece no terminal e é gravado no `trace.json`
+- Permite auditoria: você lê o trace e entende **por que** o agente decidiu cada passo
+
+Para trocar de arquitetura, basta criar `architectures/plan_execute/planner.md` e rodar com `--arquitetura plan_execute`.
+
+**Comandos executados:**
+```bash
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no checkout" --arquitetura react
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no checkout"
 ```
+
+**Arquitetura ReAct:**
+```
+Runtime Python (genérico)
+       ↓
+Flag --arquitetura react
+       ↓
+contratos.py carrega:
+  - 9 contratos do agente (monitor-agent/)
+  - sobrescreve com architectures/react/planner.md + executor.md
+       ↓
+ciclo.py → loop com raciocínio
+       ↓
+plano JSON:
+{
+  "raciocínio": "Já coletei: nada ainda. Próximo passo lógico: chamar consultar_metricas",
+  "proxima_acao": "CHAMAR_FERRAMENTA",
+  "nome_ferramenta": "consultar_metricas",
+  ...
+}
+       ↓
+trace.json → campo "arquitetura": "react" + raciocínio em cada etapa
+```
+**Arquiteturas Disponíveis:**
+- **ReAct**: Reason + Act (raciocínio antes de agir)
+- **Plan-Execute**: Planeja tudo, depois executa (aula 8)
+- **Reflection**: Auto-crítica após cada ação (aula 8)
