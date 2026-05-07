@@ -334,3 +334,66 @@ trace.json → campo "arquitetura": "react" + raciocínio em cada etapa
 - **ReAct**: Reason + Act (raciocínio antes de agir)
 - **Plan-Execute**: Planeja tudo, depois executa (aula 8)
 - **Reflection**: Auto-crítica após cada ação (aula 8)
+
+**Projeto:** [plan-execute-and-reflection](module-02-a)
+
+**Tecnologias utilizadas:**
+- **Python** - Runtime com suporte a múltiplas arquiteturas cognitivas
+- **LLM (Large Language Model)** - Planejamento único (Plan-Execute) e crítica (Reflection)
+- **YAML** - Contratos de arquitetura (`plan_execute/`, `reflect/`)
+- **JSON** - Formato de saída com plano completo e crítica estruturada
+
+**Conceitos abordados:**
+- **Plan-Execute**: Uma chamada à LLM gera plano completo, execução determinística com tokens=0 nas etapas seguintes
+- **Reflection**: Fase de crítica antes de finalizar, com auto-correção baseada em feedback
+- `critic.md`: Novo contrato definindo critérios, limiar de aprovação e formato de crítica
+- Fase REFLEXÃO no loop: rejeita → corrige → aprova (até `max_reflexoes`)
+- Open-Closed Principle: novas arquiteturas sem mexer no runtime
+- Detecção por sinais: `modo_execucao: plan_execute` e presença de `critic.md`
+
+**Aplicação prática:**
+O `module-02-a` expande o slot de arquiteturas com duas novas opções:
+
+- **Plan-Execute**: LLM gera todos os passos na primeira etapa (`plano_completo`). O runtime executa sequencialmente sem novas chamadas à LLM. Ideal quando o pipeline é determinístico e tokens importam.
+
+- **Reflection**: Antes de `FINALIZAR`, o agente submete o resultado ao crítico. Se nota < `limiar_aprovacao` (70), recebe feedback e corrige (até `max_reflexoes: 2`). Garante qualidade e completude do output.
+
+Fluxo típico Reflection (mock):
+```
+Etapa 1-3: consultar_metricas → buscar_logs → relatorio_incidente → FINALIZAR
+   [reflexão] rejeitado. nota=55/100
+     problemas: evidências não cruzadas
+     sugestão: chamar buscar_logs com janela ampla
+Etapa 4: buscar_logs (correção) → FINALIZAR
+   [reflexão] aprovado! nota=85/100
+```
+
+**Comandos executados:**
+```bash
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no checkout" --arquitetura plan_execute
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no checkout" --arquitetura reflect
+```
+
+**Arquiteturas Cognitivas Disponíveis:**
+```
+Runtime Python (agnóstico)
+       ↓
+┌─────────────────┬─────────────────┬─────────────────┐
+│ ReAct           │ Plan-Execute    │ Reflection       │
+│ Reason + Act    │ Planeja tudo    │ Executa + Crítica│
+│ raciocínio/     │ depois executa  │ rejeita → corrige│
+│ etapa           │ tokens=0 nas    │ até aprovação    │
+│                 │ etapas seguintes│                  │
+└─────────────────┴─────────────────┴─────────────────┘
+       ↓
+Sinais detectados pelo runtime:
+- ReAct: formato_saida.raciocínio: obrigatório
+- Plan-Execute: modo_execucao: plan_execute
+- Reflection: presença de critic.md
+```
+**Comparativo de Arquiteturas:**
+| Arquitetura | LLM por etapa | Fase extra | Quando usar |
+|-------------|---------------|------------|-------------|
+| ReAct | 1 por etapa | — | Auditoria passo a passo |
+| Plan-Execute | 1 (só na primeira) | — | Pipeline determinístico, economia de tokens |
+| Reflection | 1 + crítica | reflexão | Qualidade/completude crítica do output |
