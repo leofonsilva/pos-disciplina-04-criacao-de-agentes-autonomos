@@ -397,3 +397,76 @@ Sinais detectados pelo runtime:
 | ReAct | 1 por etapa | — | Auditoria passo a passo |
 | Plan-Execute | 1 (só na primeira) | — | Pipeline determinístico, economia de tokens |
 | Reflection | 1 + crítica | reflexão | Qualidade/completude crítica do output |
+
+**Projeto:** [eval-suite](module-02-b)
+
+**Tecnologias utilizadas:**
+- **Python** - Benchmark engine e eval suite
+- **YAML** - Definição de suites de avaliação com métricas e limiares
+- **JSON** - Dataset de cenários e resultados de benchmark
+- **Markdown** - Relatórios comparativos automáticos
+
+**Conceitos abordados:**
+- Evals: medir decisão, não código (taxa de conclusão, cobertura, tokens, tempo)
+- Dataset com cenários e gabarito (`ferramentas_esperadas`)
+- Suite de avaliação: métricas + limiares de qualidade
+- Benchmark engine: itera dataset, extrai métricas, fiscaliza limiares
+- Comparação entre 4 arquiteturas: `padrão`, `react`, `plan_execute`, `reflect`
+- Relatório comparativo com melhor valor em negrito por métrica
+- Equivalências com frameworks reais (LangChain, LangGraph)
+
+**Aplicação prática:**
+O `module-02-b` fecha a Unidade 2 com uma **eval suite** para escolher a melhor arquitetura baseada em evidências, não intuição.
+
+Componentes:
+- **Dataset** (`evals/datasets/incidentes.json`): 5 cenários com dificuldade e ferramentas esperadas
+- **Suite** (`evals/suites/monitor-agent.yaml`): define métricas (taxa_conclusao, media_tokens, cobertura_ferramentas, etc.) e limiares mínimos
+- **Benchmark Engine** (`runtime/benchmark.py`): roda arquitetura contra dataset, extrai métricas do trace, gera relatório
+- **Equivalências** (`equivalencias/`): mapeamento nosso framework ↔ LangChain ↔ LangGraph
+
+Comandos:
+- `benchmark`: roda uma arquitetura, salva `bench_<arq>.json`
+- `comparar`: roda as 4 arquiteturas, gera `benchmarks/report.md` com tabela comparativa
+
+**Comandos executados:**
+```bash
+python runtime/main.py benchmark --agente monitor-agent --suite evals/suites/monitor-agent.yaml --arquitetura react
+python runtime/main.py comparar --agente monitor-agent --suite evals/suites/monitor-agent.yaml
+```
+
+**Arquitetura de Evals:**
+```
+Dataset (incidentes.json)
+       ↓
+Suite (monitor-agent.yaml) → métricas + limiares
+       ↓
+Benchmark Engine (benchmark.py)
+       ↓
+┌──────────────────────────────────────────┐
+│ 4 arquiteturas rodando 5 cenários cada │
+│ padrão | react | plan_execute | reflect │
+└──────────────────────────────────────────┘
+       ↓
+bench_<arq>.json (4 arquivos)
+       ↓
+report.md (tabela comparativa + violações + veredito)
+```
+
+**Métricas Comparadas:**
+| Métrica | O que mede | Quando preocupar |
+|---------|-------------|------------------|
+| `taxa_conclusao` | % de cenários completados | < 80% |
+| `cobertura_ferramentas` | % das esperadas que foram chamadas | < 75% |
+| `media_tokens` | custo médio por execução | valor mais alto = mais caro |
+| `tokens_planejamento` | concentração de tokens no planejamento | Plan-Execute concentra aqui |
+| `reflexoes_total` | ciclos rejeição→correção (só reflect) | muitas = output ruim inicial |
+
+**Equivalências (Nosso Framework ↔ LangChain ↔ LangGraph):**
+| Nosso Framework | LangChain | LangGraph |
+|-----------------|-----------|-----------|
+| `agent.md` | prompt template | `TypedDict` State |
+| `skills.md` | `@tool` decorators | nodes do grafo |
+| `planner.md` (ReAct) | `create_react_agent()` | `conditional_edges` |
+| `ciclo.py` | `AgentExecutor` | `StateGraph` |
+| `rules.md → max_etapas` | `max_iterations` | loop do grafo |
+| `trace.json` | LangSmith | callbacks |

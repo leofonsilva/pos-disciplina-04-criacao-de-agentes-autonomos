@@ -1,0 +1,121 @@
+{
+  "arquitetura": "plan_execute",
+  "agente": "monitor-agent",
+  "cenarios_total": 5,
+  "taxa_conclusao": 80.0,
+  "media_etapas": 4.6,
+  "media_tokens": 4695.0,
+  "tokens_planejamento": 3126.0,
+  "media_tempo_segundos": 33.2,
+  "cobertura_ferramentas": 100.0,
+  "taxa_sucesso_ferramentas": 100.0,
+  "reflexoes_total": 0,
+  "tempo_total_segundos": 166.12,
+  "resultados_por_cenario": [
+    {
+      "caso_id": "inc-001",
+      "concluido": false,
+      "etapas": 3,
+      "tokens_total": 2347,
+      "tokens_prompt": 1608,
+      "ferramentas_chamadas": [
+        "buscar_logs",
+        "consultar_metricas",
+        "relatorio_incidente"
+      ],
+      "cobertura_ferramentas": 100.0,
+      "qualidades": {
+        "completa": 3,
+        "parcial": 0,
+        "falha": 0
+      },
+      "reflexoes": 0
+    },
+    {
+      "caso_id": "inc-002",
+      "concluido": true,
+      "etapas": 5,
+      "tokens_total": 5594,
+      "tokens_prompt": 3420,
+      "ferramentas_chamadas": [
+        "buscar_logs",
+        "consultar_metricas",
+        "historico_deploys",
+        "relatorio_incidente"
+      ],
+      "cobertura_ferramentas": 100.0,
+      "qualidades": {
+        "completa": 4,
+        "parcial": 0,
+        "falha": 0
+      },
+      "reflexoes": 0
+    },
+    {
+      "caso_id": "inc-003",
+      "concluido": true,
+      "etapas": 5,
+      "tokens_total": 5192,
+      "tokens_prompt": 3530,
+      "ferramentas_chamadas": [
+        "buscar_logs",
+        "consultar_metricas",
+        "historico_deploys",
+        "relatorio_incidente"
+      ],
+      "cobertura_ferramentas": 100.0,
+      "qualidades": {
+        "completa": 4,
+        "parcial": 0,
+        "falha": 0
+      },
+      "reflexoes": 0
+    },
+    {
+      "caso_id": "inc-004",
+      "concluido": true,
+      "etapas": 5,
+      "tokens_total": 4771,
+      "tokens_prompt": 3490,
+      "ferramentas_chamadas": [
+        "buscar_logs",
+        "consultar_metricas",
+        "historico_deploys",
+        "relatorio_incidente"
+      ],
+      "cobertura_ferramentas": 100.0,
+      "qualidades": {
+        "completa": 4,
+        "parcial": 0,
+        "falha": 0
+      },
+      "reflexoes": 0
+    },
+    {
+      "caso_id": "inc-005",
+      "concluido": true,
+      "etapas": 5,
+      "tokens_total": 5571,
+      "tokens_prompt": 3584,
+      "ferramentas_chamadas": [
+        "buscar_logs",
+        "consultar_metricas",
+        "historico_deploys",
+        "relatorio_incidente"
+      ],
+      "cobertura_ferramentas": 100.0,
+      "qualidades": {
+        "completa": 4,
+        "parcial": 0,
+        "falha": 0
+      },
+      "reflexoes": 0
+    }
+  ],
+  "limiares": {
+    "taxa_conclusao": 80,
+    "taxa_sucesso_ferramentas": 90,
+    "cobertura_ferramentas": 75
+  },
+  "violacoes": []
+}
