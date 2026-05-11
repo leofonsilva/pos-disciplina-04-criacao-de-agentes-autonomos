@@ -5,61 +5,59 @@ Pendente...
 
 ## Setup Python + Virtual Environment (WSL Ubuntu 24)
 
-### 1. Atualizar o sistema
+1. Atualizar o sistema
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2. Instalar Python e ferramentas necessárias
+2. Instalar Python e ferramentas necessárias
 ```bash
 sudo apt install python3 python3-pip python3-venv -y
 ```
 
-### 3. Acessar o diretório do projeto
+3. Acessar o diretório do projeto
 ```bash
 cd <<disciplina>>
 ```
 
-### 4. Criar o ambiente virtual
+4. Criar o ambiente virtual
 ```bash
 python3 -m venv .venv
 ```
 
-### 5. Ativar o ambiente virtual
+5. Ativar o ambiente virtual
 ```bash
 source .venv/bin/activate
 ```
-Após ativar, o terminal deve mostrar algo assim:
-
+- Após ativar, o terminal deve mostrar algo assim:
 ```bash
 (.venv) user@machine:~/seu-projeto$
 ```
 
-### 6. Instalar dependências do projeto (exemplo)
+6. Instalar dependências do projeto (exemplo)
 ```bash
 pip install -r runtime/requirements.txt
 ```
 
-### 7. Verificar instalação (opcional)
+7. Verificar instalação (opcional)
 ```bash
 python --version
 pip list
 ```
 
-### 8. Desativar o ambiente virtual
+8. Desativar o ambiente virtual
 ```bash
 deactivate
 ```
 
-### Uso no dia a dia
-Sempre que voltar ao projeto:
+9. Uso no dia a dia, sempre que voltar ao projeto:
 ```bash
 cd <<disciplina>>
 source .venv/bin/activate
 cd <<modulo>>
 ```
 
-### Observações
+10. Observações
 
 * O ambiente virtual fica dentro da pasta `.venv/`
 * Não deve ser versionado no Git
@@ -601,3 +599,68 @@ trace.json marca origem:
 | Política | rules.md (texto injetado) | LLM + auditoria |
 | Validação | db_adapter (regex, parametrização) | runtime (bloqueia) |
 | Hook | hooks.md (lista de ações) | runtime (intercepta) |
+
+#### **Projeto:** [tool-selection-eval-suite](module-03-b)
+
+**Tecnologias utilizadas**:
+- **Python** - Eval runner para tool selection
+- **YAML** - Suites de avaliação com métricas e limiares
+- **JSON** - Dataset de casos de tool selection com gabarito explícito
+- **Markdown** - Relatórios automáticos por arquitetura
+
+**Conceitos abordados**:
+- Tool selection eval: mede precisão de escolha de ferramenta (caso a caso)
+- Dataset com `tool_esperada`, `argumentos_esperados`, `tools_nao_esperadas`
+- 4 métricas: `tool_selection_accuracy`, `argument_accuracy`, `unnecessary_calls_rate`, `wrong_tool_rate`
+- Eval mais barato que benchmark: chama só o planejador, não o ciclo inteiro
+- Comparativo entre 4 arquiteturas via `tool-eval-comparar`
+- Refinamento spec-driven: melhorar `descricao` da skill = accuracy sobe sem código
+
+**Aplicação prática**:
+O `module-03-b` mede se o agente **escolhe a tool certa para a etapa certa com os argumentos certos**.
+
+Componentes:
+- **Dataset** (`tool_selection_cases.json`): casos com entrada, etapa, contexto, tool esperada, justificativa
+- **Suite** (`tool_selection.yaml`): métricas + limiares de qualidade
+- **Runner** (`tool_eval.py`): itera dataset, chama planejador, avalia caso a caso
+- **Refinamento**: melhorar `descricao` da skill pode subir accuracy 20 pontos sem mudar código
+
+**Comandos executados**:
+```bash
+python runtime/main.py tool-eval --agente monitor-agent --suite evals/suites/tool_selection.yaml
+python runtime/main.py tool-eval-comparar --agente monitor-agent --suite evals/suites/tool_selection.yaml
+```
+
+**Arquitetura do Tool Eval**:
+```
+dataset (tool_selection_cases.json)
+       ↓
+suite (tool_selection.yaml) → métricas + limiares
+       ↓
+tool_eval.py → rodar_tool_eval
+       ↓
+┌──────────────────────────────────────────────┐
+│ 4 arquiteturas: padrão, react, plan_execute, │
+│ reflect — cada uma roda o planejador apenas │
+└──────────────────────────────────────────────┘
+       ↓
+tool_eval_<arq>.json (4 arquivos)
+       ↓
+tool_selection_report.md (comparativo + negrito no melhor valor)
+```
+
+**Métricas e Limiares**:
+| Métrica | Direção | Limiar |
+|---------|---------|--------|
+| `tool_selection_accuracy` | maior = melhor | ≥ 80% |
+| `argument_accuracy` | maior = melhor | - |
+| `unnecessary_calls_rate` | menor = melhor | ≤ 10% |
+| `wrong_tool_rate` | menor = melhor | ≤ 15% |
+
+**Comparativo Esperado por Arquitetura**:
+| Arquitetura | Comportamento |
+|-------------|---------------|
+| `react` | accuracy alta — raciocina antes de cada escolha |
+| `reflect` | accuracy alta — crítico corrige tool errada |
+| `plan_execute` | accuracy menor — decide tudo no início |
+| `padrão` | baseline sem raciocínio explícito |
