@@ -71,7 +71,8 @@ rm -rf .venv
 ## Módulos
 
 ### Módulo 01: Introdução aos Agentes Autônomos
-**Projeto:** [monitor-agent](module-01)
+
+#### **Projeto:** [monitor-agent](module-01)
 
 **Tecnologias utilizadas:**
 - **Python** - Linguagem principal para o runtime do agente
@@ -109,7 +110,7 @@ Alerta → Runtime Python → Loop (Perceber → Planejar → Agir → Avaliar)
                     Contratos (agent.md, skills.md, rules.md, contracts/*.md)
 ```
 
-**Projeto:** [monitor-agent-v2](module-01-a)
+#### **Projeto:** [monitor-agent-v2](module-01-a)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime completo com módulos especializados
@@ -161,7 +162,7 @@ ferramentas.py  telemetria.py
 (cria tools)    (trace, audit, metrics)
 ```
 
-**Projeto:** [trace-analyzer](module-01-b)
+#### **Projeto:** [trace-analyzer](module-01-b)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime compartilhado com análise especializada
@@ -212,7 +213,7 @@ Nível 4: trace-analyzer (análise automatizada)
     Saída: analise.json + analise-agente.md
 ```
 
-**Projeto:** [agent-types](module-01-c)
+#### **Projeto:** [agent-types](module-01-c)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime genérico para múltiplos tipos de agentes
@@ -276,7 +277,8 @@ Exemplos:
 8. Onboarding Guide Agent (Dev Productivity)
 
 ### Módulo 02: Raciocínio e Tomada de Decisão em Agentes
-**Projeto:** [cognitive-architecture](module-02)
+
+#### **Projeto:** [cognitive-architecture](module-02)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime com suporte a múltiplas arquiteturas cognitivas
@@ -336,7 +338,7 @@ trace.json → campo "arquitetura": "react" + raciocínio em cada etapa
 - **Plan-Execute**: Planeja tudo, depois executa (aula 8)
 - **Reflection**: Auto-crítica após cada ação (aula 8)
 
-**Projeto:** [plan-execute-and-reflection](module-02-a)
+#### **Projeto:** [plan-execute-and-reflection](module-02-a)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime com suporte a múltiplas arquiteturas cognitivas
@@ -399,7 +401,7 @@ Sinais detectados pelo runtime:
 | Plan-Execute | 1 (só na primeira) | — | Pipeline determinístico, economia de tokens |
 | Reflection | 1 + crítica | reflexão | Qualidade/completude crítica do output |
 
-**Projeto:** [eval-suite](module-02-b)
+#### **Projeto:** [eval-suite](module-02-b)
 
 **Tecnologias utilizadas:**
 - **Python** - Benchmark engine e eval suite
@@ -472,8 +474,9 @@ report.md (tabela comparativa + violações + veredito)
 | `rules.md → max_etapas` | `max_iterations` | loop do grafo |
 | `trace.json` | LangSmith | callbacks |
 
-# Módulo 03: Integração com o Mundo Real e Ferramentas
-**Projeto:** [mock-to-real](module-03)
+### Módulo 03: Integração com o Mundo Real e Ferramentas
+
+#### **Projeto:** [mock-to-real](module-03)
 
 **Tecnologias utilizadas**:
 - **Python** - Runtime com padrão Adapter
@@ -532,3 +535,69 @@ trace.json marca:
 | Latência | ~0ms | ms HTTP |
 | Marca no trace | sem `_adapter` | `_adapter: "rest"` |
 | Auditável | não | sim |
+
+#### **Projeto:** [database-and-mcp](module-03-a)
+
+**Tecnologias utilizadas**:
+- **Python** - Runtime com adapters (rest, database, mcp)
+- **FastAPI** - API local (inalterada da aula 10)
+- **SQLite** - Banco de dados local via db_adapter
+- **MCP (Model Context Protocol)** - Servidor stdio com SDK oficial
+- **SQL** - Queries parametrizadas com segurança (read_only, LIMIT)
+- **Env** - Secrets para conexão (`DB_CONNECTION_STRING`, `API_BASE_URL`, `API_KEY`)
+
+**Conceitos abordados**:
+- 4 tipos de adapter rodando simultaneamente: rest, database, mcp, mock
+- `db_adapter.py`: 3 regras de segurança (read_only, parametrização, LIMIT)
+- `mcp_adapter.py`: SDK oficial MCP via stdio com handshake
+- Segurança em 3 camadas: política declarada (`rules.md`), validação no adapter, hooks em runtime
+- Graceful degradation: infra indisponível → fallback mock com `_simulado: true`
+- `seed_logs.py`: popula SQLite com dados consistentes
+- MCP config padrão (compatível com Claude Code/Cursor)
+
+**Aplicação prática**:
+O `module-03-a` expande o `monitor-agent` com 6 tools e 4 adapters:
+
+- **REST** (3 tools): `consultar_metricas`, `buscar_logs`, `historico_deploys`
+- **Database** (1 tool): `buscar_logs_historico` — query parametrizada, read_only, LIMIT
+- **MCP** (1 tool): `buscar_issues` — stdio MCP com handshake via SDK
+- **Mock** (1 tool): `relatorio_incidente`
+
+Segurança em 3 camadas:
+1. Política declarada no `rules.md` (texto injetado no prompt)
+2. Validação no adapter (`db_adapter` bloqueia INSERT/UPDATE/DELETE)
+3. Hooks em runtime (`validar_rate_limit`, `verificar_budget`)
+
+**Comandos executados**:
+```bash
+python seed_logs.py
+python -c "import sqlite3; \
+c = sqlite3.connect('monitor.db'); \
+print(c.execute('SELECT service, level, timestamp FROM logs ORDER BY timestamp DESC LIMIT 5').fetchall());"
+python api_local/server.py
+python mcp/server.py
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no checkout"
+```
+
+**Arquitetura Multi-Adapter**:
+```
+skills.md → tipo_implementacao: rest | database | mcp | mock
+    ↓
+_resolver_adapter (runtime/ferramentas.py)
+    ↓
+┌──────────┬──────────┬──────────┬──────────┐
+│ rest     │ database│ mcp      │ mock     │
+│ (HTTP)   │ (SQLite)│ (stdio)  │ (LLM)    │
+└──────────┴──────────┴──────────┴──────────┘
+    ↓
+trace.json marca origem:
+{"_adapter": "database", "_simulado": false}
+{"_adapter": "mcp", "_via_mcp_real": true}
+```
+
+**Segurança em 3 Camadas**:
+| Vetor | Onde mora | Quem fiscaliza |
+|-------|-----------|-----------------|
+| Política | rules.md (texto injetado) | LLM + auditoria |
+| Validação | db_adapter (regex, parametrização) | runtime (bloqueia) |
+| Hook | hooks.md (lista de ações) | runtime (intercepta) |
