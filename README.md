@@ -17,7 +17,7 @@ sudo apt install python3 python3-pip python3-venv -y
 
 ### 3. Acessar o diretório do projeto
 ```bash
-cd seu-projeto
+cd <<disciplina>>
 ```
 
 ### 4. Criar o ambiente virtual
@@ -37,7 +37,7 @@ Após ativar, o terminal deve mostrar algo assim:
 
 ### 6. Instalar dependências do projeto (exemplo)
 ```bash
-pip install -r module-01/runtime/requirements.txt
+pip install -r runtime/requirements.txt
 ```
 
 ### 7. Verificar instalação (opcional)
@@ -54,8 +54,9 @@ deactivate
 ### Uso no dia a dia
 Sempre que voltar ao projeto:
 ```bash
-cd seu-projeto
+cd <<disciplina>>
 source .venv/bin/activate
+cd <<modulo>>
 ```
 
 ### Observações
@@ -470,3 +471,64 @@ report.md (tabela comparativa + violações + veredito)
 | `ciclo.py` | `AgentExecutor` | `StateGraph` |
 | `rules.md → max_etapas` | `max_iterations` | loop do grafo |
 | `trace.json` | LangSmith | callbacks |
+
+# Módulo 03: Integração com o Mundo Real e Ferramentas
+**Projeto:** [mock-to-real](module-03)
+
+**Tecnologias utilizadas**:
+- **Python** - Runtime com padrão Adapter
+- **FastAPI** - API local com endpoints reais
+- **HTTP/REST** - Comunicação com APIs via adapter
+- **YAML** - Contratos com `tipo_implementacao`, `conexao`, `limites`
+- **Env** - Secrets (`API_BASE_URL`, `API_KEY`)
+
+**Conceitos abordados**:
+- Padrão Adapter: contrato declara tipo, runtime despacha, adapter conecta
+- `tipo_implementacao`: `rest`, `database`, `mcp`, `mock` (ausente = mock)
+- Resolutor dinâmico por tipo de implementação
+- Backward compatible: sem `tipo_implementacao` → mock
+- Graceful degradation: adapter não instalado → fallback mock
+- Open-Closed: nova fonte entra como pasta nova em `adapters/`
+- API local com dados consistentes (diferente do mock aleatório)
+- Auditabilidade no trace: campo `_adapter` e `_latencia_ms`
+
+**Aplicação prática**:
+O `module-03` faz o `monitor-agent` sair do simulador. 3 skills viram REST via adapter, 1 continua mock.
+
+- `consultar_metricas`, `buscar_logs`, `historico_deploys` usam `rest_adapter`
+- `relatorio_incidente` continua com `mock` (convivem no mesmo agente)
+- Cada habilidade resolve seu próprio adapter
+- API local: `GET /api/v1/metrics`, `/logs`, `/deploys`
+- Secrets no `.env`, nunca no contrato `.md`
+
+**Comandos executados**:
+```bash
+python api_local/server.py
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no checkout"
+```
+
+**Arquitetura Adapter**:
+```
+skills.md (contrato)
+    ↓
+tipo_implementacao: rest | database | mcp | mock
+    ↓
+runtime/ferramentas.py → _resolver_adapter
+    ↓
+┌──────────────┬──────────────┬──────────────┐
+│ rest_adapter │ db_adapter  │ mcp_adapter  │
+│ (HTTP)       │ (Postgres)  │ (MCP)        │
+└──────────────┴──────────────┴──────────────┘
+    ↓ fallback → construir_ferramenta (mock)
+
+trace.json marca:
+{"_adapter": "rest", "_latencia_ms": 12.4, ...}
+```
+
+**Mock vs Real**:
+| Característica | Mock | REST |
+|----------------|------|------|
+| Valores | aleatórios | consistentes |
+| Latência | ~0ms | ms HTTP |
+| Marca no trace | sem `_adapter` | `_adapter: "rest"` |
+| Auditável | não | sim |
