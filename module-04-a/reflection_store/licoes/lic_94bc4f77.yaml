@@ -1,0 +1,8 @@
+id: lic_94bc4f77
+timestamp: '2026-05-13T20:14:29.056523'
+situacao: resolução de incidentes em serviços críticos
+acao: agente consultou histórico de deploys antes de investigar o erro
+resultado: não considerou que o erro poderia estar relacionado a uma mudança recente
+  não documentada
+licao: em serviços críticos, sempre verificar a documentação de mudanças recentes
+  e suas possíveis implicações antes de investigar o erro

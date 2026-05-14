@@ -721,3 +721,65 @@ hooks: antes/depois de recuperar e persistir
 - Memória episódica deve ser resumida, nunca trace completo
 - Max 2000 tokens de contexto recuperado por execução
 - Memórias com mais de 90 dias sem acesso podem ser arquivadas
+
+#### **Projeto:** [embeddings-evolutive-reflection](module-04-a)
+
+**Tecnologias utilizadas**:
+- **Python** - Runtime com embedding adapter e reflection store
+- **YAML** - Contratos de reflexão com extração, detecção e injeção de lições
+- **LLM (Large Language Model)** - Motor de extração de lições e busca semântica
+- **JSON** - Índice local de embeddings (indice.json)
+
+**Conceitos abordados**:
+- **Embedding adapter**: indexar texto, buscar por similaridade de cosseno, reindexar memórias existentes
+- **Memória contextual**: busca semântica com `text-embedding-3-small` e limiar de similaridade (`limiar_similaridade: 0.7`)
+- **Reflection store**: 3 subdiretórios — `licoes/` (YAMLs com situacao, acao, resultado, licao), `padroes/` (detecção consolidada), `meta.yaml` (contador de execuções)
+- **Lazy reindex**: na primeira execução, reindexa automaticamente `longa` + `episodica` sem script de setup
+- **Extração de lições**: só quando resultado inesperado (erro, falha, estouro de etapas) — no máximo 3 por execução, generalizáveis, filtradas contra secrets
+- **Detecção de padrões**: contador MVP a cada 10 execuções
+- **Injeção no planner**: lições relevantes entram no `contexto_do_planner` como `licoes_relevantes`
+- **Contexto enriquecido**: planner recebe `conhecimento_relevante`, `experiencia_anterior`, `licoes_relevantes`, `fatos_conhecidos`
+
+**Aplicação prática**:
+O agente agora não só lembra fatos e episódios, ele entende similaridade semântica e aprende com os erros. Na primeira execução, reindexa automaticamente memórias existentes no índice de embeddings. Quando o resultado é inesperado (erro, falha, timeout), extrai até 3 lições generalizáveis e persiste em `reflection_store/licoes/`. Execuções seguintes recebem contexto enriquecido: fragmentos similares, episódios anteriores e lições relevantes injetados no planner.
+
+O agente pode:
+- Buscar conhecimento semântico por similaridade (`embedding_adapter.buscar`)
+- Extrair lições ao final de execuções com erro (`_extrair_licoes`)
+- Receber lições relevantes no planner da próxima execução
+- Reindexar automaticamente se o índice estiver vazio (lazy reindex)
+
+**Comandos executados**:
+```bash
+python runtime/main.py rodar --agente monitor-agent --entrada "Erro 500 no serviço de pagamentos"
+python runtime/main.py rodar --agente monitor-agent --entrada "Investigar incidente de latência no checkout após deploy"
+```
+
+**Arquitetura de Memória + Reflexão**:
+```
+Contratos: memory.md + reflection.md
+    ↓
+runtime/adapters/
+├── memory_adapter.py  (gravar, recuperar, atualizar, remover, listar)
+└── embedding_adapter.py (indexar, buscar, reindexar)
+    ↓
+┌────────────┬────────────┬────────────┬────────────┬────────────────┐
+│ curta/     │ longa/     │ episodica/ │ contextual/│ reflection_    │
+│ (RAM)      │ (YAML)     │ (YAML)     │ indice.json│ store/licoes/  │
+└────────────┴────────────┴────────────┴────────────┴────────────────┘
+    ↓
+ciclo.py:
+  _recuperar_contexto → (longa + episodica + contextual + licoes)
+       ↓
+  loop principal (planner com contexto_enriquecido)
+       ↓
+  _persistir_memoria → (episodica)
+  _extrair_licoes   → (reflection_store/licoes/) [se resultado inesperado]
+```
+
+**Políticas de Reflexão**:
+- Só extrair lição se resultado inesperado (erro, falha, estouro de etapas)
+- Lição deve ser generalizável, nunca específica a um input
+- Máximo 3 lições por execução
+- Filtrar secrets/tokens/senhas antes de persistir
+- Máximo 5 lições injetadas por execução, ordenadas por relevância ao objetivo

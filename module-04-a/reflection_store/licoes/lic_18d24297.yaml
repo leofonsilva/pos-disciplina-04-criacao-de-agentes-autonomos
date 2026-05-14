@@ -1,0 +1,8 @@
+id: lic_18d24297
+timestamp: '2026-05-13T20:14:03.662190'
+situacao: resolução de incidentes em serviços críticos
+acao: agente consultou histórico de deploys antes de investigar o erro
+resultado: não havia informações suficientes sobre o último deploy que poderiam ter
+  causado o erro
+licao: em serviços críticos, garantir que o histórico de deploys esteja sempre atualizado
+  e acessível para facilitar a investigação de incidentes
