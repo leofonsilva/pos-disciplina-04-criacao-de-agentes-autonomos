@@ -1,0 +1,7 @@
+id: lic_3bd9c88c
+timestamp: '2026-05-13T20:56:18.681006'
+situacao: registro de incidentes com recomendações
+acao: agente registrou o incidente e gerou recomendações baseadas em issues abertas
+resultado: as recomendações não foram úteis para a resolução imediata do erro
+licao: ao registrar incidentes, garantir que as recomendações sejam específicas e
+  acionáveis, baseadas em dados concretos e não apenas em informações gerais

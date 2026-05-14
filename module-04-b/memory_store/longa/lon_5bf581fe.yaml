@@ -1,0 +1,40 @@
+conteudo:
+  entrada:
+    evidencia: &id001
+      buscar_issues:
+        _entrada:
+          estado: open
+          labels:
+          - bug
+          - p1
+          repositorio: pedidos
+        contagem_total: 2
+        issues:
+        - autor: eng-oncall
+          criado_em: '2026-05-13T18:49:15.258894'
+          estado: open
+          labels:
+          - bug
+          - p1
+          - producao
+          numero: 142
+          repositorio: pedidos
+          titulo: Latencia elevada apos deploy v2.4.1
+        - autor: monitoring-bot
+          criado_em: '2026-05-13T15:49:15.258894'
+          estado: open
+          labels:
+          - bug
+          - p2
+          numero: 138
+          repositorio: pedidos
+          titulo: Circuit breaker ativando para upstream-payments
+    nome_servico: nome_servico_sem_api_key
+    recomendacao: *id001
+    severidade: severidade_sem_api_key
+  ferramenta: relatorio_incidente
+  observacoes:
+    id_incidente: incidente-2026-05-13-001
+    status: aberto
+id: lon_5bf581fe
+timestamp: '2026-05-13T20:49:20.337462'

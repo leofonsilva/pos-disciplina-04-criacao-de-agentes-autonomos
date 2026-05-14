@@ -1,0 +1,34 @@
+conteudo:
+  entrada:
+    evidencia:
+      issues_abertas:
+      - autor: eng-oncall
+        criado_em: '2026-05-13T18:48:28.808227'
+        estado: open
+        labels:
+        - bug
+        - p1
+        - producao
+        numero: 142
+        repositorio: pagamentos
+        titulo: Latencia elevada apos deploy v2.4.1
+      - autor: monitoring-bot
+        criado_em: '2026-05-13T15:48:28.808227'
+        estado: open
+        labels:
+        - bug
+        - p2
+        numero: 138
+        repositorio: pagamentos
+        titulo: Circuit breaker ativando para upstream-payments
+    nome_servico: pagamentos
+    recomendacao:
+      acao: Investigar a latência elevada após o deploy v2.4.1 e verificar a ativação
+        do circuit breaker para upstream-payments.
+    severidade: alta
+  ferramenta: relatorio_incidente
+  observacoes:
+    id_incidente: incidente-2026-05-13-001
+    status: aberto
+id: lon_4a093582
+timestamp: '2026-05-13T20:55:38.211425'

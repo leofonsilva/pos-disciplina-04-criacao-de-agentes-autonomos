@@ -1,0 +1,17 @@
+atualizado_em: '2026-05-13T20:56:14.453437'
+conteudo:
+  entrada:
+    evidencia:
+      campo: evidencia
+      valor: sem_api_key
+    nome_servico: nome_servico_sem_api_key
+    recomendacao:
+      campo: recomendacao
+      valor: sem_api_key
+    severidade: severidade_sem_api_key
+  ferramenta: relatorio_incidente
+  observacoes:
+    id_incidente: INC-2023-0032
+    status: aberto
+id: lon_7aa0bb08
+timestamp: '2026-05-13T20:53:07.233725'

@@ -1,0 +1,8 @@
+id: lic_7348c9cf
+timestamp: '2026-05-13T20:53:52.287253'
+situacao: resolução de incidentes com erros intermitentes
+acao: agente consultou histórico de deploys antes de investigar o erro
+resultado: não considerou que o erro poderia ser temporário e relacionado a picos
+  de carga
+licao: em casos de erros intermitentes, avaliar a possibilidade de picos de carga
+  antes de tomar ações corretivas imediatas

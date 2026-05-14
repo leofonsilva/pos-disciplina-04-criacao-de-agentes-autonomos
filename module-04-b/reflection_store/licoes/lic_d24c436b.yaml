@@ -1,0 +1,9 @@
+id: lic_d24c436b
+timestamp: '2026-05-13T20:56:18.679181'
+situacao: resolução de incidentes com erros intermitentes
+acao: agente buscou informações em logs e métricas sem considerar a intermitência
+  do erro
+resultado: informações coletadas não foram conclusivas devido à natureza intermitente
+  do erro 500
+licao: em casos de erros intermitentes, priorizar a coleta de dados em períodos de
+  estabilidade antes de realizar a análise

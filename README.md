@@ -783,3 +783,66 @@ ciclo.py:
 - Máximo 3 lições por execução
 - Filtrar secrets/tokens/senhas antes de persistir
 - Máximo 5 lições injetadas por execução, ordenadas por relevância ao objetivo
+
+#### **Projeto:** [memory-eval-suite](module-04-b)
+
+**Tecnologias utilizadas**:
+- **Python** - Runtime com embedding adapter e reflection store
+- **YAML** - Contratos de reflexão com extração, detecção e injeção de lições
+- **LLM (Large Language Model)** - Motor de extração de lições e busca semântica
+- **JSON** - Índice local de embeddings (indice.json)
+
+**Conceitos abordados**:
+- Avaliar se a memória melhora a tomada de decisões do agente
+- Dataset com 5+ casos cobrindo memória ajudando, ruído, desatualização, sem memória e lições
+- 6 métricas com limiares: precisão, recall, utilização, alucinação, melhoria de decisão, qualidade de lições
+- Execução dos casos duas vezes: uma com memória, outra com memória desativada
+- Diagnóstico de métricas baixas e falso-positivos
+
+**Aplicação prática**:
+Este eval da aula 15 mede quantitativamente o impacto da memória instalada e funcionando:
+- Roda casos do dataset com e sem memória via flag `MEMORY_DISABLED`
+- Reporta métricas e gera relatório markdown com comparativos
+- Permite eval rápido com `--max-casos` para iterar mais rápido
+- Fornece guia rápido para diagnóstico e ajuste de parâmetros
+
+**Arquitetura**:
+```txt
+runtime/memory_eval.py  → execucao do harness
+evals/datasets/memory_impact_cases.json  → dataset de casos de teste
+evals/suites/memory_impact_eval.yaml  → definição das métricas e limiares
+evals/resultados/memory_impact_report_<ts>.md  → relatório markdown da execução
+```
+
+**Comandos executados**:
+```bash
+python runtime/main.py memory-eval --agente monitor-agent --suite evals/suites/memory_impact_eval.yaml
+python runtime/main.py memory-eval --agente monitor-agent --suite evals/suites/memory_impact_eval.yaml --max-casos 2
+```
+
+**Métricas avaliadas**:
+| Métrica                | Descrição                                  | Limiar    |
+|------------------------|--------------------------------------------|-----------|
+| `retrieval_precision`  | Fragmentos recuperados são úteis           | 0.7       |
+| `retrieval_recall`     | Encontrou tudo que importava               | 0.6       |
+| `memory_utilization`   | O planner usou o contexto recuperado       | 0.5       |
+| `hallucination_from_memory` | Inventou dados não presentes na memória | max 0.1   |
+| `decision_improvement` | Decisões melhoram com memória               | min 0.15  |
+| `lesson_quality`       | Lições extraídas são úteis                   | 0.6       |
+
+**Regras para garantir qualidade da métrica `lesson_quality`**:
+- A pasta `reflection_store/licoes` precisa estar populada antes do eval
+- Forçar extração de lições para obter dados válidos (exemplo: reduzir max_etapas temporariamente)
+
+**Diagnóstico & Ajustes**:
+- `retrieval_precision`: aumentar `contextual.limiar_similaridade` para filtrar melhor
+- `retrieval_recall`: reduzir limiar para recuperar mais
+- `memory_utilization`: ajustar regras no planner para usar memória
+- `hallucination_from_memory`: configurar política de expiração para descartar memórias antigas
+- `decision_improvement`: avaliar sintoma, não causa
+- `lesson_quality`: revisar configuração de extração no reflection.md
+
+**Comandos executados**:
+```bash
+python runtime/main.py memory-eval --agente monitor-agent --suite evals/suites/memory_impact_eval.yaml --max-casos 2
+```

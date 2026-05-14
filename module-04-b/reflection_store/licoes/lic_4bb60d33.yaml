@@ -1,0 +1,8 @@
+id: lic_4bb60d33
+timestamp: '2026-05-13T20:55:44.148951'
+situacao: resolução de incidentes relacionados a latência em serviços críticos
+acao: agente buscou informações sobre o histórico de deploys imediatamente após o
+  alerta
+resultado: não considerou que o último deploy poderia estar em processo de estabilização
+licao: após um deploy, aguardar um período de estabilização antes de investigar problemas
+  de latência

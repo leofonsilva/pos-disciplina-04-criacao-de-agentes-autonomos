@@ -1,0 +1,7 @@
+id: lic_317ab73e
+timestamp: '2026-05-13T20:53:16.034127'
+situacao: resolução de incidentes com múltiplas causas potenciais
+acao: agente buscou issues abertas relacionadas à latência
+resultado: as recomendações não abordaram a causa raiz do problema
+licao: ao investigar incidentes, garantir que as recomendações sejam baseadas em análises
+  de causa raiz e não apenas em correlações superficiais
