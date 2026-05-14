@@ -1,0 +1,19 @@
+conteudo:
+  entrada:
+    evidencia:
+      issues_abertas:
+      - numero: 142
+        titulo: Latencia elevada apos deploy v2.4.1
+      - numero: 138
+        titulo: Circuit breaker ativando para upstream-payments
+    nome_servico: pagamentos
+    recomendacao:
+      acao: Investigar as issues abertas relacionadas e realizar um rollback do deploy
+        v2.4.1 se necessário.
+    severidade: alta
+  ferramenta: relatorio_incidente
+  observacoes:
+    id_incidente: inc-2023-10-23-001
+    status: aberto
+id: lon_c47fd31c
+timestamp: '2026-05-13T18:53:22.684796'

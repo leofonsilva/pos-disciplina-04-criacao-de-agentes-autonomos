@@ -664,3 +664,60 @@ tool_selection_report.md (comparativo + negrito no melhor valor)
 | `reflect` | accuracy alta — crítico corrige tool errada |
 | `plan_execute` | accuracy menor — decide tudo no início |
 | `padrão` | baseline sem raciocínio explícito |
+
+### Módulo 04: Memória e Evolução de Agentes Inteligentes
+
+#### **Projeto:** [agent-that-remembers](module-04)
+
+**Tecnologias utilizadas**:
+- **Python** - Runtime com memory adapter e memory_store
+- **YAML** - Contratos de memória com 4 tipos e políticas
+- **LLM (Large Language Model)** - Motor com contexto recuperado de memória
+- **JSON** - Formato de resumos de episódios
+
+**Conceitos abordados**:
+- 4 tipos de memória: curta (local/RAM), longa (fatos persistentes YAML), episódica (resumos de execuções), contextual (embeddings, aula 14)
+- memory_adapter.py: 5 operações (gravar, recuperar, atualizar, remover, listar) — mesmo padrão dos tool adapters
+- Hooks de memória: antes/depois de recuperar e persistir contexto
+- Políticas de memória no rules.md: governança sobre o que pode ser gravado
+- Integração no ciclo: _recuperar_contexto (antes do loop) e _persistir_memoria (depois do loop)
+- Memória opt-in: sem tipagem_memoria no contrato, volta ao comportamento da U1
+
+**Aplicação prática**:
+O `monitor-agent` agora acumula conhecimento entre execuções. Na primeira rodada, grava fatos confirmados em `memory_store/longa/` e resumo do episódio em `memory_store/episodica/`. Na segunda rodada, recupera o contexto antes do loop e o agente já vê histórico relevante — tende a tomar atalhos e não reinvestigar do zero.
+
+O agente pode:
+- Recuperar fatos conhecidos antes de começar (`_recuperar_contexto`)
+- Persistir resumo do episódio após finalizar (`_persistir_memoria`)
+- Aplicar políticas de governança (nunca secrets, só fatos confirmados, etc.)
+
+**Comandos executados**:
+```bash
+python runtime/main.py rodar --agente monitor-agent --entrada "Alerta de latência no serviço de pagamentos"
+python runtime/main.py rodar --agente monitor-agent --entrada "Erro 500 no serviço de pagamentos"
+```
+
+**Arquitetura da Memória**:
+```
+monitor-agent/memory.md (contrato)
+    ↓
+tipos_memoria: curta | longa | episodica | contextual
+    ↓
+runtime/adapters/memory_adapter.py
+    ↓
+┌────────────┬────────────┬────────────┬────────────┐
+│ curta/     │ longa/     │ episodica/ │ contextual/│
+│ (RAM)      │ (YAML)     │ (YAML)     │ (emb.)    │
+└────────────┴────────────┴────────────┴────────────┘
+    ↓
+ciclo.py: _recuperar_contexto → loop → _persistir_memoria
+    ↓
+hooks: antes/depois de recuperar e persistir
+```
+
+**Políticas de Memória (rules.md)**:
+- Nunca gravar secrets, tokens ou senhas
+- Memória longa só aceita fatos confirmados por evidência de tool
+- Memória episódica deve ser resumida, nunca trace completo
+- Max 2000 tokens de contexto recuperado por execução
+- Memórias com mais de 90 dias sem acesso podem ser arquivadas
