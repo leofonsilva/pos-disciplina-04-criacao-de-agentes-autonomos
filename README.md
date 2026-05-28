@@ -1,7 +1,9 @@
-# Pós Disciplina 03 – Criação de agentes autônomos
+# Pós Disciplina 04 – Criação de agentes autônomos
 
 ## Introdução
-Pendente...
+Este repositório contém todos os projetos desenvolvidos durante a disciplina Pós Disciplina 04 – Criação de agentes autônomos, abordando desde conceitos fundamentais de agentes baseados em contratos até implementações avançadas com memória estruturada, integração com ferramentas reais e avaliação quantitativa de desempenho.
+
+Cada módulo foi desenvolvido para demonstrar na prática como construir agentes autônomos capazes de raciocinar, aprender com experiências e interagir com o mundo real através de APIs, bancos de dados e protocolos como MCP. O repositório explora desde agentes simples baseados em tarefas até arquiteturas cognitivas avançadas (ReAct, Plan-Execute, Reflection), sistemas de memória de quatro tipos, e suites de avaliação para medir o impacto da memória na tomada de decisões, utilizando Python como linguagem principal e YAML para definição de contratos.
 
 ## Setup Python + Virtual Environment (WSL Ubuntu 24)
 
