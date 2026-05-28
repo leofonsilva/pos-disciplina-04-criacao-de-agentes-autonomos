@@ -1,7 +1,7 @@
 # Pós Disciplina 04 – Criação de agentes autônomos
 
 ## Introdução
-Este repositório contém todos os projetos desenvolvidos durante a disciplina Pós Disciplina 04 – Criação de agentes autônomos, abordando desde conceitos fundamentais de agentes baseados em contratos até implementações avançadas com memória estruturada, integração com ferramentas reais e avaliação quantitativa de desempenho.
+Este repositório contém todos os projetos desenvolvidos durante a disciplina **Criação de Agentes Autônomos**, abordando desde conceitos fundamentais de agentes baseados em contratos até implementações avançadas com memória estruturada, integração com ferramentas reais e avaliação quantitativa de desempenho.
 
 Cada módulo foi desenvolvido para demonstrar na prática como construir agentes autônomos capazes de raciocinar, aprender com experiências e interagir com o mundo real através de APIs, bancos de dados e protocolos como MCP. O repositório explora desde agentes simples baseados em tarefas até arquiteturas cognitivas avançadas (ReAct, Plan-Execute, Reflection), sistemas de memória de quatro tipos, e suites de avaliação para medir o impacto da memória na tomada de decisões, utilizando Python como linguagem principal e YAML para definição de contratos.
 
@@ -72,7 +72,7 @@ rm -rf .venv
 
 ### Módulo 01: Introdução aos Agentes Autônomos
 
-#### **Projeto:** [monitor-agent](module-01)
+#### **Projeto:** [Monitor Agent](module-01)
 
 **Tecnologias utilizadas:**
 - **Python** - Linguagem principal para o runtime do agente
@@ -110,7 +110,7 @@ Alerta → Runtime Python → Loop (Perceber → Planejar → Agir → Avaliar)
                     Contratos (agent.md, skills.md, rules.md, contracts/*.md)
 ```
 
-#### **Projeto:** [monitor-agent-v2](module-01-a)
+#### **Projeto:** [Monitor Agent V2](module-01-a)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime completo com módulos especializados
@@ -162,7 +162,7 @@ ferramentas.py  telemetria.py
 (cria tools)    (trace, audit, metrics)
 ```
 
-#### **Projeto:** [trace-analyzer](module-01-b)
+#### **Projeto:** [Trace Analyzer](module-01-b)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime compartilhado com análise especializada
@@ -213,7 +213,7 @@ Nível 4: trace-analyzer (análise automatizada)
     Saída: analise.json + analise-agente.md
 ```
 
-#### **Projeto:** [agent-types](module-01-c)
+#### **Projeto:** [Agent Types](module-01-c)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime genérico para múltiplos tipos de agentes
@@ -278,7 +278,7 @@ Exemplos:
 
 ### Módulo 02: Raciocínio e Tomada de Decisão em Agentes
 
-#### **Projeto:** [cognitive-architecture](module-02)
+#### **Projeto:** [Cognitive Architecture](module-02)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime com suporte a múltiplas arquiteturas cognitivas
@@ -338,7 +338,7 @@ trace.json → campo "arquitetura": "react" + raciocínio em cada etapa
 - **Plan-Execute**: Planeja tudo, depois executa (aula 8)
 - **Reflection**: Auto-crítica após cada ação (aula 8)
 
-#### **Projeto:** [plan-execute-and-reflection](module-02-a)
+#### **Projeto:** [Plan-Execute and Reflection](module-02-a)
 
 **Tecnologias utilizadas:**
 - **Python** - Runtime com suporte a múltiplas arquiteturas cognitivas
@@ -401,7 +401,7 @@ Sinais detectados pelo runtime:
 | Plan-Execute | 1 (só na primeira) | — | Pipeline determinístico, economia de tokens |
 | Reflection | 1 + crítica | reflexão | Qualidade/completude crítica do output |
 
-#### **Projeto:** [eval-suite](module-02-b)
+#### **Projeto:** [Eval Suite](module-02-b)
 
 **Tecnologias utilizadas:**
 - **Python** - Benchmark engine e eval suite
@@ -476,7 +476,7 @@ report.md (tabela comparativa + violações + veredito)
 
 ### Módulo 03: Integração com o Mundo Real e Ferramentas
 
-#### **Projeto:** [mock-to-real](module-03)
+#### **Projeto:** [Mock to Real](module-03)
 
 **Tecnologias utilizadas**:
 - **Python** - Runtime com padrão Adapter
@@ -536,7 +536,7 @@ trace.json marca:
 | Marca no trace | sem `_adapter` | `_adapter: "rest"` |
 | Auditável | não | sim |
 
-#### **Projeto:** [database-and-mcp](module-03-a)
+#### **Projeto:** [Database and MCP](module-03-a)
 
 **Tecnologias utilizadas**:
 - **Python** - Runtime com adapters (rest, database, mcp)
@@ -602,7 +602,7 @@ trace.json marca origem:
 | Validação | db_adapter (regex, parametrização) | runtime (bloqueia) |
 | Hook | hooks.md (lista de ações) | runtime (intercepta) |
 
-#### **Projeto:** [tool-selection-eval-suite](module-03-b)
+#### **Projeto:** [Tool Selection Eval Suite](module-03-b)
 
 **Tecnologias utilizadas**:
 - **Python** - Eval runner para tool selection
@@ -669,7 +669,7 @@ tool_selection_report.md (comparativo + negrito no melhor valor)
 
 ### Módulo 04: Memória e Evolução de Agentes Inteligentes
 
-#### **Projeto:** [agent-that-remembers](module-04)
+#### **Projeto:** [Agent That Remembers](module-04)
 
 **Tecnologias utilizadas**:
 - **Python** - Runtime com memory adapter e memory_store
@@ -724,7 +724,7 @@ hooks: antes/depois de recuperar e persistir
 - Max 2000 tokens de contexto recuperado por execução
 - Memórias com mais de 90 dias sem acesso podem ser arquivadas
 
-#### **Projeto:** [embeddings-evolutive-reflection](module-04-a)
+#### **Projeto:** [Embeddings Evolutive Reflection](module-04-a)
 
 **Tecnologias utilizadas**:
 - **Python** - Runtime com embedding adapter e reflection store
@@ -786,7 +786,7 @@ ciclo.py:
 - Filtrar secrets/tokens/senhas antes de persistir
 - Máximo 5 lições injetadas por execução, ordenadas por relevância ao objetivo
 
-#### **Projeto:** [memory-eval-suite](module-04-b)
+#### **Projeto:** [Memory Eval Suite](module-04-b)
 
 **Tecnologias utilizadas**:
 - **Python** - Runtime com embedding adapter e reflection store
